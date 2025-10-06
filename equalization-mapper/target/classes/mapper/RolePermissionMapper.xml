@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ktz.equalization.mapper.RolePermissionMapper">
+
+    <resultMap id="rolePermissionMap" type="com.ktz.equalization.domain.RolePermission">
+        <id column="id" property="id" />
+        <result column="role_id" property="roleId" />
+        <result column="permission_id" property="permissionId" />
+        <result column="create_time" property="createTime" />
+        <result column="update_time" property="updateTime" />
+    </resultMap>
+
+    <insert id="insertOne" parameterType="com.ktz.equalization.domain.RolePermission">
+        insert into role_permission
+        values (#{id}, #{roleId}, #{permissionId}, #{createTime}, #{updateTime})
+    </insert>
+
+    <delete id="deleteOne">
+        delete from role_permission
+        where id = #{id}
+    </delete>
+
+    <delete id="deleteMulti" parameterType="java.lang.String">
+        delete from role_permission
+        where id in
+        <foreach collection="array" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <update id="update" parameterType="com.ktz.equalization.domain.RolePermission">
+        update role_permission
+        <trim prefix="set" suffixOverrides=",">
+            <if test="roleId != null">role_id = #{roleId},</if>
+            <if test="permissionId != null">permission_id = #{permissionId},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <select id="getOne" resultMap="rolePermissionMap">
+        select *
+        from role_permission
+        where id = #{id}
+    </select>
+
+    <select id="listAll" resultMap="rolePermissionMap">
+        select *
+        from role_permission
+    </select>
+
+    <insert id="insertMulti" parameterType="java.util.List">
+        insert into role_permission
+        values
+        <foreach collection="list" item="rolePermission" separator=",">
+            (#{rolePermission.id}, #{rolePermission.roleId}, #{rolePermission.permissionId}, #{rolePermission.createTime}, #{rolePermission.updateTime})
+        </foreach>
+    </insert>
+
+</mapper>

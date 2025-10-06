@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ktz.equalization.mapper.DialogueMapper">
+    <resultMap id="dialogueMapper" type="com.ktz.equalization.domain.Dialogue">
+        <id column="id" property="id" />
+        <result column="question" property="question" />
+        <result column="answer" property="answer" />
+        <result column="create_time" property="createTime" />
+        <result column="update_time" property="updateTime" />
+    </resultMap>
+
+    <insert id="insertOne" parameterType="com.ktz.equalization.domain.Dialogue">
+        insert into dialogue
+        values (#{id}, #{question}, #{answer}, #{createTime}, #{updateTime})
+    </insert>
+
+    <delete id="deleteOne">
+        delete from dialogue
+        where id = #{id}
+    </delete>
+
+    <delete id="deleteMulti">
+        delete from dialogue
+        where id in
+        <foreach collection="array" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <update id="update" parameterType="com.ktz.equalization.domain.Dialogue">
+        update dialogue
+            <trim prefix="set" suffixOverrides=",">
+                <if test="question != null">question = #{question},</if>
+                <if test="answer != null and answer != ''">answer = #{answer},</if>
+                <if test="createTime != null and createTime != ''">create_time=#{createTime},</if>
+                <if test="updateTime != null and updateTime != ''">update_time=#{updateTime},</if>
+            </trim>
+        where id = #{id}
+    </update>
+
+    <select id="getOne" resultMap="dialogueMapper">
+        select *
+        from dialogue
+        where id = #{id}
+    </select>
+
+    <select id="listAll" resultMap="dialogueMapper">
+        select *
+        from dialogue
+    </select>
+
+    <select id="list" parameterType="com.ktz.equalization.domain.Role" resultMap="dialogueMapper">
+        select *
+        from dialogue
+        <where>
+            <if test="question != null and question != ''">
+                and question = #{question}
+            </if>
+        </where>
+    </select>
+
+    <select id="count" parameterType="com.ktz.equalization.domain.Dialogue">
+        select count(*)
+        from dialogue
+        <where>
+            <if test="question != null and question != ''">
+                and question = #{question}
+            </if>
+        </where>
+    </select>
+
+</mapper>

@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ktz.equalization.mapper.UserMapper">
+
+    <resultMap id="userMap" type="com.ktz.equalization.domain.User">
+        <id column="id" property="id" />
+        <result column="username" property="username" />
+        <result column="password" property="password" />
+        <result column="phone" property="phone" />
+        <result column="email" property="email" />
+        <result column="create_time" property="createTime" />
+        <result column="update_time" property="updateTime" />
+    </resultMap>
+
+    <insert id="insertOne" parameterType="com.ktz.equalization.domain.User" useGeneratedKeys="true" keyColumn="id" keyProperty="id">
+        insert into user (id, username, password, phone, email, create_time, update_time)
+        values (#{id}, #{username}, #{password}, #{phone}, #{email}, #{createTime}, #{updateTime})
+    </insert>
+
+    <delete id="deleteOne">
+        delete from user
+        where id = #{id}
+    </delete>
+
+    <delete id="deleteMulti">
+        delete from user
+        where id in
+        <foreach collection="array" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <update id="update" parameterType="com.ktz.equalization.domain.User">
+        update user
+        <trim prefix="set" suffixOverrides=",">
+            <if test="username != null and username != ''">username = #{username},</if>
+            <if test="phone != null and phone != ''">phone = #{phone},</if>
+            <if test="email != null and email != ''">email = #{email},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <select id="getOne" resultMap="userMap">
+        select *
+        from user
+        where id = #{id}
+    </select>
+
+    <select id="listAll" resultMap="userMap">
+        select *
+        from user
+    </select>
+
+    <select id="list" parameterType="com.ktz.equalization.domain.User" resultMap="userMap">
+        select *
+        from user
+        <where>
+            <if test="username != null and username != ''">
+                and username = #{username}
+            </if>
+            <if test="email != null and email != ''">
+                and email = #{email}
+            </if>
+        </where>
+    </select>
+
+    <select id="count" parameterType="com.ktz.equalization.domain.User">
+        select count(*)
+        from user
+        <where>
+            <if test="username != null and username != ''">
+                and username = #{username}
+            </if>
+            <if test="email != null and email != ''">
+                and email = #{email}
+            </if>
+        </where>
+    </select>
+
+    <select id="getByEmailAndPwd" resultMap="userMap">
+        select *
+        from user
+        where email = #{email} and password = #{password}
+    </select>
+
+</mapper>

@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ktz.equalization.mapper.PolicyMapper">
+    <resultMap id="policyMapper" type="com.ktz.equalization.domain.Policy">
+        <id column="id" property="id" />
+        <result column="title" property="title" />
+        <result column="author" property="author"/>
+        <result column="publish" property="publish"/>
+        <result column="create_time" property="createTime" />
+        <result column="update_time" property="updateTime" />
+    </resultMap>
+
+    <insert id="insertOne" parameterType="com.ktz.equalization.domain.Policy">
+        insert into policy
+        values (#{id}, #{title}, #{author}, #{publish}, #{url}, #{publishTime}, #{createTime}, #{updateTime})
+    </insert>
+
+    <delete id="deleteOne">
+        delete from policy
+        where id = #{id}
+    </delete>
+
+    <delete id="deleteMulti">
+        delete from policy
+        where id in
+        <foreach collection="array" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <update id="update" parameterType="com.ktz.equalization.domain.Policy">
+        update policy
+        <trim prefix="set" suffixOverrides=",">
+            <if test="title !=null and title !=''">title=#{title},</if>
+            <if test="author !=null and title !=''"> author=#{author},</if>
+            <if test="publish !=null and title !=''"> publish=#{publish},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <select id="getOne" resultMap="policyMapper">
+        select *
+        from policy
+        where id = #{id}
+    </select>
+
+    <select id="listAll" resultMap="policyMapper">
+        select *
+        from policy
+    </select>
+
+    <select id="list" parameterType="com.ktz.equalization.domain.Policy" resultMap="policyMapper">
+        select *
+        from policy
+        <where>
+            <if test="author != null and author != ''">
+                and author = #{author}
+            </if>
+        </where>
+    </select>
+
+    <select id="count" parameterType="com.ktz.equalization.domain.Policy">
+        select count(*)
+        from policy
+        <where>
+            <if test="author != null and author != ''">
+                and author = #{author}
+            </if>
+        </where>
+    </select>
+
+    <insert id="insertMulti" parameterType="java.util.List">
+        insert into policy
+        values
+        <foreach collection="list" item="policy" separator=",">
+            (#{policy.id}, #{policy.title}, #{policy.author}, #{policy.publish}, #{policy.url}, #{policy.publishTime}, #{policy.createTime}, #{policy.updateTime})
+        </foreach>
+    </insert>
+
+</mapper>

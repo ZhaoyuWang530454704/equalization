@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ktz.equalization.mapper.RoleMapper">
+    <resultMap id="roleMapper" type="com.ktz.equalization.domain.Role">
+        <id column="id" property="id" />
+        <result column="name" property="name" />
+        <result column="create_time" property="createTime" />
+        <result column="update_time" property="updateTime" />
+    </resultMap>
+    <insert id="insertOne" parameterType="com.ktz.equalization.domain.Role" useGeneratedKeys="true" keyColumn="id" keyProperty="id">
+        insert into role
+        values (#{id}, #{parentId}, #{name}, #{createTime}, #{updateTime})
+    </insert>
+
+    <delete id="deleteOne">
+        delete from role
+        where id = #{id}
+    </delete>
+
+    <delete id="deleteMulti"  parameterType="java.lang.String">
+        delete from role
+        where id in
+        <foreach collection="array" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <update id="update" parameterType="com.ktz.equalization.domain.Role">
+        update role
+        <trim prefix="set" suffixOverrides=",">
+            <if test="parentId != null">parent_id = #{parentId},</if>
+            <if test="name != null and name != ''">name = #{name},</if>
+            <if test="updateTime != null">update_time=#{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <select id="getOne" resultMap="roleMapper">
+        select *
+        from role
+        where id = #{id}
+    </select>
+
+    <select id="listAll" resultMap="roleMapper">
+        select *
+        from role
+    </select>
+
+    <select id="list" parameterType="com.ktz.equalization.domain.Role" resultMap="roleMapper">
+        select *
+        from role
+        <where>
+            <if test="name != null and name != ''">
+                and name = #{name}
+            </if>
+        </where>
+    </select>
+
+    <select id="count" parameterType="com.ktz.equalization.domain.Role">
+        select count(*)
+        from role
+        <where>
+            <if test="name != null and name != ''">
+                and name = #{name}
+            </if>
+        </where>
+    </select>
+
+    <select id="getParent" resultMap="roleMapper">
+        select *
+        from role
+        where id = #{parentId}
+    </select>
+
+</mapper>

@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ktz.equalization.mapper.EconomyMapper">
+    <resultMap id="economyMapper" type="com.ktz.equalization.domain.Economy">
+        <id column="id" property="id"/>
+        <result column="indicator" property="indicator"/>
+        <result column="region_id" property="regionId"/>
+        <result column="field_id" property="fieldId"/>
+        <result column="year" property="year"/>
+        <result column="value" property="value"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_time" property="updateTime"/>
+    </resultMap>
+
+    <insert id="insertOne" parameterType="com.ktz.equalization.domain.Economy">
+        insert into economy
+        values (#{id}, #{indicator}, #{regionId}, #{fieldId},#{year},#{value}, #{createTime}, #{updateTime})
+    </insert>
+
+    <delete id="deleteOne">
+        delete from economy
+        where id = #{id}
+    </delete>
+
+        <delete id="deleteMulti">
+        delete from economy
+        where id in
+        <foreach collection="array" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <update id="update" parameterType="com.ktz.equalization.domain.Economy">
+        update economy
+        <trim prefix="set" suffixOverrides=",">
+            <if test="indicator != null">indicator = #{indicator},</if>
+            <if test="regionId != null and regionId != ''">region_id = #{regionId},</if>
+            <if test="fieldId != null and fieldId !=''">field_id = # {fieldId},</if>
+            <if test="createTime != null and createTime != ''">create_time=#{createTime},</if>
+            <if test="updateTime != null and updateTime != ''">update_time=#{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <select id="getOne" resultMap="economyMapper">
+        select *
+        from economy
+        where id = #{id}
+    </select>
+
+    <select id="listAll" resultMap="economyMapper">
+        select *
+        from economy
+    </select>
+
+    <select id="list" parameterType="com.ktz.equalization.domain.Economy" resultMap="economyMapper">
+        select *
+        from economy
+        <where>
+            <if test="indicator != null and indicator != ''">
+                and indicator = #{indicator}
+            </if>
+            <if test="regionId != null">
+                and region_id = #{regionId}
+            </if>
+            <if test="fieldId != null">
+                and field_id = #{fieldId}
+            </if>
+            <if test="year != null and year != ''">
+                and year = #{year}
+            </if>
+        </where>
+    </select>
+
+    <select id="count" parameterType="com.ktz.equalization.domain.Economy">
+        select count(*)
+        from economy
+        <where>
+            <if test="indicator != null and indicator != ''">
+                and indicator = #{indicator}
+            </if>
+        </where>
+    </select>
+
+    <insert id="insertMulti" parameterType="java.util.List">
+        insert into economy
+        values
+        <foreach collection="list" item="economy" separator=",">
+            (#{economy.id}, #{economy.indicator}, #{economy.regionId}, #{economy.fieldId}, #{economy.year}, #{economy.value}, #{economy.createTime}, #{economy.updateTime})
+        </foreach>
+    </insert>
+
+</mapper>
